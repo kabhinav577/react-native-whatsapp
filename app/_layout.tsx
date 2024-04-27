@@ -19,7 +19,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'helvnue-light': require('@/assets/fonts/HelveticaNeueLight.otf'),
+    'helvnue-medium': require('@/assets/fonts/HelveticaNeueMedium.otf'),
+    'helvnue-bold': require('@/assets/fonts/HelveticaNeueBold.otf'),
+    'helvnue-heavy': require('@/assets/fonts/HelveticaNeueHeavy.otf'),
     ...FontAwesome.font,
   });
 
@@ -45,6 +48,13 @@ function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="otp"
+        options={{
+          headerTitle: 'Enter your Phone Number',
+          headerBackVisible: false,
+        }}
+      />
     </Stack>
   );
 }
