@@ -6,12 +6,32 @@ import {
   Linking,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import MaskInput from 'react-native-mask-input';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const INDIA_PHONE_MASKED = [
+  '+',
+  /\d/,
+  /\d/,
+  ' ',
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
+
+import Colors from '@/constants/Colors';
 
 const OtpScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -25,13 +45,33 @@ const OtpScreen = () => {
     Linking.openURL('https://whatsapp.com/legal/privacy_policy');
   };
 
-  const sendOtp = async () => {};
+  const sendOtp = async () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push(`/verify/${phoneNumber}`);
+    }, 2000);
+  };
 
   const trySignIn = async () => {};
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View style={styles.container}>
+        {loading && (
+          <View style={[StyleSheet.absoluteFill, styles.loading]}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+            <Text
+              style={{
+                padding: 10,
+                fontFamily: 'helvnue-light',
+                fontSize: 16,
+              }}
+            >
+              Sending code...
+            </Text>
+          </View>
+        )}
         <Text style={styles.description}>
           WhatsApp will need to verify your account. Carrier charges may apply.
         </Text>
@@ -42,6 +82,18 @@ const OtpScreen = () => {
             <Ionicons name="chevron-forward" size={20} color={Colors.gray} />
           </View>
           <View style={styles.separator} />
+
+          <MaskInput
+            value={phoneNumber}
+            keyboardType="numeric"
+            autoFocus
+            placeholder="+91 your phone number"
+            style={styles.input}
+            onChangeText={(masked, unmasked) => {
+              setPhoneNumber(masked);
+            }}
+            mask={INDIA_PHONE_MASKED}
+          />
         </View>
 
         <Text style={styles.legal}>
@@ -111,7 +163,7 @@ const styles = StyleSheet.create({
   listItemText: {
     fontSize: 18,
     fontFamily: 'helvnue-medium',
-    color: Colors.gray,
+    color: Colors.primary,
   },
   separator: {
     width: '100%',
@@ -144,5 +196,20 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'helvnue-bold',
     color: Colors.gray,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#fff',
+    padding: 6,
+    fontSize: 18,
+    marginTop: 10,
+    color: Colors.gray,
+  },
+  loading: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
