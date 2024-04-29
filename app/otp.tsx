@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -32,12 +33,19 @@ const INDIA_PHONE_MASKED = [
 ];
 
 import Colors from '@/constants/Colors';
+import {
+  isClerkAPIResponseError,
+  useSignIn,
+  useSignUp,
+} from '@clerk/clerk-expo';
 
 const OtpScreen = () => {
-  const [loading, setLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
   const router = useRouter();
   const { bottom } = useSafeAreaInsets();
+  const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const { signUp, setActive } = useSignUp();
+  const { signIn } = useSignIn();
 
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 90 : 0;
 
@@ -47,16 +55,51 @@ const OtpScreen = () => {
 
   const sendOtp = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await signUp!.create({ phoneNumber });
+
+      signUp!.preparePhoneNumberVerification();
+
       router.push(`/verify/${phoneNumber}`);
-    }, 2000);
+    } catch (error) {
+      console.log('Error in Sending OTP', error);
+      if (isClerkAPIResponseError(error)) {
+        if (error.errors[0].code === 'form_identifier_exists') {
+          // User signed up before
+          console.log('User signed up before');
+          await trySignIn();
+        } else {
+          setLoading(false);
+          Alert.alert('Error', error.errors[0].message);
+        }
+      }
+    }
   };
 
-  const trySignIn = async () => {};
+  const trySignIn = async () => {
+    const { supportedFirstFactors } = await signIn!.create({
+      identifier: phoneNumber,
+    });
+
+    const firstPhoneFactor: any = supportedFirstFactors.find((factor: any) => {
+      return factor.strategy === 'phone_code';
+    });
+
+    const { phoneNumberId } = firstPhoneFactor;
+
+    await signIn!.prepareFirstFactor({
+      strategy: 'phone_code',
+      phoneNumberId,
+    });
+
+    router.push(`/verify/${phoneNumber}?signin=true`);
+  };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      keyboardVerticalOffset={keyboardVerticalOffset}
+      style={{ flex: 1 }}
+    >
       <View style={styles.container}>
         {loading && (
           <View style={[StyleSheet.absoluteFill, styles.loading]}>

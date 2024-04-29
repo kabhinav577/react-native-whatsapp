@@ -13,6 +13,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^1.0.2",
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/native": "^6.0.2",
     "expo": "~50.0.14",
@@ -27,12 +28,13 @@
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
     "react-native-confirmation-code-field": "^7.4.0",
+    "react-native-gesture-handler": "~2.14.0",
     "react-native-mask-input": "^1.2.3",
+    "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.6",
-    "react-native-reanimated": "~3.6.2",
-    "react-native-gesture-handler": "~2.14.0"
+    "expo-secure-store": "~12.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
