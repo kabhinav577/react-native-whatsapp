@@ -8,7 +8,7 @@ const SettingsScreen = () => {
   const { signOut } = useAuth();
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <SettingsItem />
 
         <TouchableOpacity onPress={() => signOut()}>
