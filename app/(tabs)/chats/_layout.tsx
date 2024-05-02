@@ -38,7 +38,7 @@ const SettingsLayout = () => {
                   color={Colors.primary}
                 />
               </TouchableOpacity>
-              <Link href="/" asChild>
+              <Link href="/(modals)/new-chat" asChild>
                 <TouchableOpacity>
                   <Ionicons
                     name="add-circle"
