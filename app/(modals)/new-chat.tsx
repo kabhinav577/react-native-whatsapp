@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { AlphabetList } from 'react-native-section-alphabet-list';
 
-import contacts from '@/assets/data/contacts.json';
 import Colors from '@/constants/Colors';
+import contacts from '@/assets/data/contacts.json';
 import { defaultStyles } from '@/constants/Styles';
 
 const NewChatModal = () => {

@@ -25,7 +25,7 @@ const ChatItem: React.FC<ChatItemProps> = ({
 }) => {
   return (
     <AppleStyleSwipeableRow>
-      <Link href={`/(tabs)/chats`} asChild>
+      <Link href={`/(tabs)/chats/${id}`} asChild>
         <TouchableHighlight
           underlayColor={Colors.lightGray}
           activeOpacity={0.5}
