@@ -13,6 +13,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import ChatMessageBox from '@/components/chats/ChatMessageBox';
+import ReplyMessageBar from '@/components/chats/ReplyMessageBar';
 
 const SingleChatScreen = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -53,6 +55,26 @@ const SingleChatScreen = () => {
       GiftedChat.append(previousMessages, messages)
     );
   }, []);
+
+  const updateRowRef = useCallback(
+    (ref: any) => {
+      if (
+        ref &&
+        replyMessage &&
+        ref.props.children.props.currentMessage?._id === replyMessage._id
+      ) {
+        swipeableRowRef.current = ref;
+      }
+    },
+    [replyMessage]
+  );
+
+  useEffect(() => {
+    if (replyMessage && swipeableRowRef.current) {
+      swipeableRowRef.current.close();
+      swipeableRowRef.current = null;
+    }
+  }, [replyMessage]);
 
   return (
     <ImageBackground
@@ -126,6 +148,19 @@ const SingleChatScreen = () => {
                 <Ionicons name="add" color={Colors.primary} size={28} />
               </View>
             )}
+          />
+        )}
+        renderMessage={(props) => (
+          <ChatMessageBox
+            {...props}
+            updateRowRef={updateRowRef}
+            setReplyOnSwipeOpen={setReplyMessage}
+          />
+        )}
+        renderChatFooter={() => (
+          <ReplyMessageBar
+            clearReply={() => setReplyMessage(null)}
+            message={replyMessage}
           />
         )}
         textInputProps={styles.composer}
